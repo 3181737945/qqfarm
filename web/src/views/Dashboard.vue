@@ -138,6 +138,16 @@ const nextFriendCheck = computed(() => {
   return formatCountdown(nc.friendRemainSec)
 })
 
+function formatMinutes(minutes: number) {
+  if (!minutes && minutes !== 0) return '-'
+  const hours = Math.floor(minutes / 60)
+  if (hours >= 24) {
+    const days = Math.floor(hours / 24)
+    return `${days}天${hours % 24}小时`
+  }
+  return `${hours}小时`
+}
+
 function formatCountdown(sec?: number) {
   if (sec === undefined || sec === null) return '--:--:--'
   const m = Math.floor(sec / 60)
@@ -311,7 +321,7 @@ onMounted(() => {
         <div class="dash-cycle-items" style="margin-top: 12px; display: grid; gap: 6px;">
           <div v-for="item in dashboardItems?.slice(0, 4) || []" :key="item.id" style="display: flex; justify-content: space-between; font-size: 13px;">
             <span style="color: var(--app-text-muted);">{{ item.name }}</span>
-            <strong>{{ item.count }}</strong>
+            <strong>{{ formatMinutes(item.count) }}</strong>
           </div>
         </div>
       </div>
