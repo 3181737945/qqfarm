@@ -46,17 +46,14 @@ const { sidebarOpen } = storeToRefs(appStore)
 .app-layout {
   width: 100vw;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 8% 6%, rgba(95, 143, 99, 0.12), transparent 28%),
-    radial-gradient(circle at 90% 8%, rgba(189, 138, 75, 0.1), transparent 26%),
-    linear-gradient(135deg, #f7faf5 0%, #eef4ec 48%, #f7f1e8 100%);
+  background: var(--app-bg);
 }
 
 .sidebar-overlay {
   position: fixed;
   inset: 0;
   z-index: 40;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(13, 21, 18, 0.35);
   backdrop-filter: blur(4px);
 }
 
@@ -68,13 +65,12 @@ const { sidebarOpen } = storeToRefs(appStore)
   padding: 0 20px;
   border-bottom: 1px solid var(--app-border);
   background: var(--app-surface);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(12px);
 }
 
 .mobile-header-title {
   font-size: 16px;
   font-weight: 700;
-  letter-spacing: -0.01em;
 }
 
 .app-main {
@@ -84,29 +80,9 @@ const { sidebarOpen } = storeToRefs(appStore)
   position: relative;
 }
 
-.app-main::before {
-  content: "";
-  position: fixed;
-  left: 292px;
-  right: 0;
-  bottom: 0;
-  height: 42vh;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 74% 88%, rgba(95, 143, 99, 0.1), transparent 28%),
-    linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.36));
-  opacity: 1;
-}
-
 @media (min-width: 768px) {
   .app-main {
-    padding: 26px;
-  }
-}
-
-@media (max-width: 1023px) {
-  .app-main::before {
-    left: 0;
+    padding: 24px;
   }
 }
 
@@ -114,7 +90,6 @@ const { sidebarOpen } = storeToRefs(appStore)
 .fade-leave-active {
   transition: opacity 0.2s ease;
 }
-
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
@@ -124,12 +99,10 @@ const { sidebarOpen } = storeToRefs(appStore)
 .slide-fade-leave-active {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 .slide-fade-enter-from {
   opacity: 0;
   transform: translateY(8px);
 }
-
 .slide-fade-leave-to {
   opacity: 0;
   transform: translateY(-8px);

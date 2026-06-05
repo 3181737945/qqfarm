@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import type { Theme } from '@/stores/app'
+import type { AccentTheme } from '@/stores/app'
 import { useAppStore } from '@/stores/app'
 
 const appStore = useAppStore()
 
-function selectTheme(theme: Theme) {
-  appStore.applyTheme(theme)
+function selectTheme(accent: AccentTheme) {
+  appStore.setAccentTheme(accent)
   appStore.toggleThemePanel()
 }
 </script>
 
 <template>
   <div class="relative">
-    <!-- 主题切换按钮 -->
     <button
       class="icon-btn mx-2 !outline-none"
       title="主题设置"
@@ -21,9 +20,7 @@ function selectTheme(theme: Theme) {
       <div i-carbon-color-palette />
     </button>
 
-    <!-- 使用 Teleport 将面板渲染到 body，避免被父容器裁剪 -->
     <teleport to="body">
-      <!-- 遮罩层 -->
       <div
         v-if="appStore.showThemePanel"
         class="fixed inset-0 z-[99] bg-black/30"
@@ -40,32 +37,37 @@ function selectTheme(theme: Theme) {
         }"
       >
         <h3 class="mb-3 text-sm text-gray-700 font-semibold dark:text-gray-200">
-          选择主题
+          主题设置
         </h3>
-        <div class="grid grid-cols-2 gap-2">
+
+        <div class="mb-3 flex items-center justify-between rounded-lg bg-gray-50 p-3 dark:bg-gray-700/50">
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-200">深色模式</span>
+          <el-switch
+            :model-value="appStore.isDark"
+            @change="appStore.toggleDark()"
+          />
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
           <button
-            v-for="(t, theme) in appStore.themes"
-            :key="theme"
-            class="relative flex flex-col items-center justify-center gap-2 rounded-lg p-3 transition-all hover:scale-105"
+            v-for="(t, accent) in appStore.accentThemes"
+            :key="accent"
+            class="flex flex-col items-center justify-center gap-1 rounded-lg border p-3 text-xs font-medium transition-all hover:scale-105"
             :class="{
-              'ring-2 ring-offset-2': appStore.currentTheme === theme,
-              'ring-blue-500': appStore.currentTheme === theme,
-              'dark:ring-offset-gray-800': t.isDark,
+              'ring-2 ring-offset-2': appStore.accentTheme === accent,
             }"
             :style="{
-              'background': t.gradient,
-              '--tw-ring-color': t.primary,
-              '--tw-ring-offset-color': t.isDark ? '#1f2937' : '#ffffff',
+              'border-color': appStore.accentTheme === accent ? (appStore.isDark ? t.darkColor : t.color) : 'var(--app-border)',
+              '--tw-ring-color': appStore.isDark ? t.darkColor : t.color,
             }"
-            :title="t.name"
-            @click="selectTheme(theme as Theme)"
+            :title="t.label"
+            @click="selectTheme(accent as AccentTheme)"
           >
-            <div :class="t.icon" class="text-xl text-white" />
-            <span class="text-sm text-white font-medium">{{ t.name }}</span>
             <div
-              v-if="appStore.currentTheme === theme"
-              class="i-carbon-checkmark absolute right-1 top-1 text-sm text-white"
+              class="h-5 w-5 rounded-full"
+              :style="{ background: appStore.isDark ? t.darkColor : t.color }"
             />
+            <span>{{ t.label }}</span>
           </button>
         </div>
 

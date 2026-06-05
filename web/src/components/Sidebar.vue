@@ -715,21 +715,33 @@ function getPlatformBadgeType(p?: string): '' | 'success' | 'warning' | 'info' |
               <el-icon :style="{ color: 'var(--theme-primary)' }"><Brush /></el-icon>
             </el-button>
           </template>
-          <div class="theme-grid">
-            <div
-              v-for="(t, theme) in appStore.themes"
-              :key="theme"
-              class="theme-grid__item"
-              :class="{ 'theme-grid__item--active': appStore.currentTheme === theme }"
-              :style="{ background: t.gradient }"
-              :title="t.name"
-              @click="appStore.applyTheme(theme as any)"
-            >
-              <el-icon :size="16" color="#fff"><component :is="t.icon" /></el-icon>
-              <span class="theme-grid__name">{{ t.name }}</span>
-              <span v-if="appStore.currentTheme === theme" class="theme-grid__check">
-                <el-icon :size="10" :style="{ color: t.primary }"><Check /></el-icon>
-              </span>
+          <div class="theme-settings">
+            <div class="theme-settings__mode">
+              <span class="theme-settings__label">模式</span>
+              <el-switch
+                :model-value="appStore.isDark"
+                inline-prompt
+                active-text="深色"
+                inactive-text="浅色"
+                @change="appStore.toggleDark"
+              />
+            </div>
+            <div class="theme-settings__section">
+              <span class="theme-settings__label">主题色</span>
+              <div class="theme-settings__grid">
+                <div
+                  v-for="(t, accent) in appStore.accentThemes"
+                  :key="accent"
+                  class="theme-settings__item"
+                  :class="{ 'theme-settings__item--active': appStore.accentTheme === accent }"
+                  :style="{ '--accent-color': appStore.isDark ? t.darkColor : t.color }"
+                  :title="t.label"
+                  @click="appStore.setAccentTheme(accent as any)"
+                >
+                  <span class="theme-settings__dot" />
+                  <span class="theme-settings__name">{{ t.label }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </el-popover>
@@ -961,14 +973,11 @@ function getPlatformBadgeType(p?: string): '' | 'success' | 'warning' | 'info' |
   top: 0;
   left: 0;
   bottom: 0;
-  width: 292px;
+  width: 280px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--app-border);
-  background:
-    radial-gradient(circle at 18% 12%, rgba(95, 143, 99, 0.12), transparent 28%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(246, 249, 243, 0.92)) !important;
-  backdrop-filter: blur(18px);
+  background: var(--app-bg-elevated) !important;
   transition: transform 0.3s ease;
   z-index: 50;
   overflow: hidden;
@@ -1006,22 +1015,18 @@ function getPlatformBadgeType(p?: string): '' | 'success' | 'warning' | 'info' |
 
 /* Brand */
 .sidebar-brand {
-  height: 72px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
+  padding: 0 18px;
   border-bottom: 1px solid var(--app-border);
 }
 
 .sidebar-brand__content {
   display: flex;
   align-items: center;
-  gap: 12px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.58);
-  padding: 8px 12px;
-  box-shadow: 0 10px 24px rgba(38, 48, 38, 0.08);
+  gap: 10px;
 }
 
 .sidebar-brand__title {
@@ -1044,7 +1049,7 @@ function getPlatformBadgeType(p?: string): '' | 'success' | 'warning' | 'info' |
 
 /* User section */
 .sidebar-user {
-  padding: 14px;
+  padding: 10px 14px;
   border-bottom: 1px solid var(--app-border);
 }
 
@@ -1060,17 +1065,16 @@ function getPlatformBadgeType(p?: string): '' | 'success' | 'warning' | 'info' |
   justify-content: space-between;
   width: 100%;
   min-width: 0;
-  padding: 12px;
+  padding: 8px 10px;
   border: 1px solid var(--app-border);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.66);
-  box-shadow: 0 12px 28px rgba(38, 48, 38, 0.07);
+  border-radius: var(--radius-md);
+  background: var(--app-surface);
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .sidebar-user__trigger:hover {
-  background: var(--el-fill-color, #ebedf0);
+  background: var(--app-surface-muted);
 }
 
 .sidebar-user__left {
@@ -1150,7 +1154,7 @@ function getPlatformBadgeType(p?: string): '' | 'success' | 'warning' | 'info' |
 
 /* Account section */
 .sidebar-account {
-  padding: 14px;
+  padding: 10px 14px;
   border-bottom: 1px solid var(--app-border);
 }
 
@@ -1160,17 +1164,16 @@ function getPlatformBadgeType(p?: string): '' | 'success' | 'warning' | 'info' |
   justify-content: space-between;
   width: 100%;
   min-width: 0;
-  padding: 12px;
+  padding: 8px 10px;
   border: 1px solid var(--app-border);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.66);
-  box-shadow: 0 12px 28px rgba(38, 48, 38, 0.07);
+  border-radius: var(--radius-md);
+  background: var(--app-surface);
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .sidebar-account__trigger:hover {
-  background: var(--el-fill-color, #ebedf0);
+  background: var(--app-surface-muted);
 }
 
 .sidebar-account__left {
@@ -1296,33 +1299,30 @@ function getPlatformBadgeType(p?: string): '' | 'success' | 'warning' | 'info' |
   flex: 1;
   overflow-y: auto;
   border-right: none !important;
-  padding: 14px;
+  padding: 12px;
   background: transparent !important;
 }
 
 .sidebar-nav .el-menu-item {
-  height: 46px;
-  line-height: 46px;
-  border: 1px solid transparent;
-  border-radius: 14px;
-  margin-bottom: 6px;
-  font-weight: 700;
+  height: 42px;
+  line-height: 42px;
+  border: none;
+  border-radius: var(--radius-md);
+  margin-bottom: 4px;
+  font-weight: 680;
   background: transparent !important;
   color: var(--app-text-muted);
-  text-shadow: none;
-  box-shadow: none;
 }
 
 .sidebar-nav .el-menu-item:hover {
-  background: rgba(255, 255, 255, 0.56) !important;
+  background: var(--app-surface-muted) !important;
   color: var(--app-text);
 }
 
 .sidebar-nav .el-menu-item.is-active {
-  border-color: rgba(95, 143, 99, 0.18);
-  background: rgba(95, 143, 99, 0.12) !important;
-  color: var(--app-accent-strong) !important;
-  box-shadow: 0 12px 26px rgba(95, 143, 99, 0.1);
+  background: var(--app-accent-muted) !important;
+  color: var(--app-accent) !important;
+  font-weight: 720;
 }
 
 /* Token display */
@@ -1379,9 +1379,9 @@ function getPlatformBadgeType(p?: string): '' | 'success' | 'warning' | 'info' |
 /* Footer */
 .sidebar-footer {
   margin-top: auto;
-  padding: 16px;
+  padding: 12px 16px;
   border-top: 1px solid var(--app-border);
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--app-surface-muted);
 }
 
 .sidebar-footer__status {
@@ -1457,54 +1457,72 @@ function getPlatformBadgeType(p?: string): '' | 'success' | 'warning' | 'info' |
   gap: 8px;
 }
 
-/* Theme grid */
-.theme-grid {
+/* Theme settings popover */
+.theme-settings {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.theme-settings__mode {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.theme-settings__label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--app-text);
+}
+.theme-settings__section {
+  display: grid;
+  gap: 10px;
+}
+.theme-settings__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
-
-.theme-grid__item {
+.theme-settings__item {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 8px;
-  border-radius: 8px;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--app-border);
+  border-radius: var(--radius-md);
+  background: var(--app-surface);
+  color: var(--app-text);
+  font-size: 12px;
+  font-weight: 700;
   cursor: pointer;
-  transition: transform 0.2s;
-  position: relative;
+  transition: border-color 0.14s, background 0.14s;
 }
-
-.theme-grid__item:hover {
-  transform: scale(1.05);
+.theme-settings__item:hover {
+  border-color: color-mix(in srgb, var(--accent-color) 38%, var(--app-border));
+  background: var(--app-accent-muted);
+  color: var(--app-accent);
 }
-
-.theme-grid__item--active {
-  box-shadow: 0 0 0 2px var(--theme-primary), 0 0 0 3px var(--theme-bg);
+.theme-settings__item--active {
+  border-color: var(--accent-color);
+  background: var(--app-accent-muted);
+  color: var(--app-accent);
 }
-
-.theme-grid__name {
-  font-size: 10px;
-  color: #fff;
-  font-weight: 500;
-  line-height: 1.2;
-}
-
-.theme-grid__check {
-  position: absolute;
-  top: 2px;
-  right: 2px;
+.theme-settings__dot {
   width: 14px;
   height: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  flex: 0 0 auto;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  background: var(--accent-color);
+  border: 2px solid var(--app-bg-elevated);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 50%, transparent);
 }
+.theme-settings__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Old theme grid removed */
 
 /* Renew modal */
 .renew-current {

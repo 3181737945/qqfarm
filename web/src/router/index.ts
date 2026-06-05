@@ -41,6 +41,11 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/home',
+      name: 'home',
+      component: () => import('@/views/Home.vue'),
+    },
+    {
       path: '/',
       component: () => import('@/layouts/DefaultLayout.vue'),
       children: menuRoutes.map(route => ({
@@ -60,6 +65,21 @@ const router = createRouter({
 router.beforeEach(async (to, _from) => {
   NProgress.start()
 
+  if (to.name === 'home') {
+    // Home page is public, always accessible
+    if (!adminToken.value) {
+      validatedToken = ''
+      return true
+    }
+    // If logged in, redirect to dashboard
+    const valid = await ensureTokenValid()
+    if (valid)
+      return { name: 'dashboard' }
+    adminToken.value = ''
+    validatedToken = ''
+    return true
+  }
+
   if (to.name === 'login') {
     if (!adminToken.value) {
       validatedToken = ''
@@ -75,14 +95,14 @@ router.beforeEach(async (to, _from) => {
 
   if (!adminToken.value) {
     validatedToken = ''
-    return { name: 'login' }
+    return { name: 'home' }
   }
 
   const valid = await ensureTokenValid()
   if (!valid) {
     adminToken.value = ''
     validatedToken = ''
-    return { name: 'login' }
+    return { name: 'home' }
   }
 
   return true

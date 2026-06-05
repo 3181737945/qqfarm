@@ -6,6 +6,12 @@ import {
   TrendCharts,
   Setting,
   Tools,
+  StarFilled,
+  ShoppingCart,
+  Collection,
+  Notification,
+  PieChart,
+  Tickets,
 } from '@element-plus/icons-vue'
 
 export interface MenuItem {
@@ -45,6 +51,27 @@ export const menuRoutes: MenuItem[] = [
     label: '分析',
     icon: TrendCharts,
     component: () => import('@/views/Analytics.vue'),
+  },
+  {
+    path: 'illustrated',
+    name: 'illustrated',
+    label: '图鉴',
+    icon: Collection,
+    component: () => import('@/views/Illustrated.vue'),
+  },
+  {
+    path: 'activities',
+    name: 'activities',
+    label: '活动中心',
+    icon: Notification,
+    component: () => import('@/views/Activities.vue'),
+  },
+  {
+    path: 'stats',
+    name: 'stats',
+    label: '数据统计',
+    icon: PieChart,
+    component: () => import('@/views/Stats.vue'),
   },
   {
     path: 'settings',
