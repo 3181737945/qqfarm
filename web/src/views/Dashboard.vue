@@ -138,16 +138,6 @@ const nextFriendCheck = computed(() => {
   return formatCountdown(nc.friendRemainSec)
 })
 
-function formatMinutes(minutes: number) {
-  if (!minutes && minutes !== 0) return '-'
-  const hours = Math.floor(minutes / 60)
-  if (hours >= 24) {
-    const days = Math.floor(hours / 24)
-    return `${days}天${hours % 24}小时`
-  }
-  return `${hours}小时`
-}
-
 function formatCountdown(sec?: number) {
   if (sec === undefined || sec === null) return '--:--:--'
   const m = Math.floor(sec / 60)
@@ -319,9 +309,13 @@ onMounted(() => {
           </div>
         </div>
         <div class="dash-cycle-items" style="margin-top: 12px; display: grid; gap: 6px;">
-          <div v-for="item in dashboardItems?.slice(0, 4) || []" :key="item.id" style="display: flex; justify-content: space-between; font-size: 13px;">
-            <span style="color: var(--app-text-muted);">{{ item.name }}</span>
-            <strong>{{ formatMinutes(item.count) }}</strong>
+<!-- 化肥容器直接显示原始数据 -->
+          <div v-for="item in dashboardItems?.slice(0, 4) || []" :key="item.id" style="display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--app-border-subtle);">
+            <span style="color: var(--app-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ item.name }}</span>
+            <strong style="font-family: var(--font-mono);">{{ item.count }}</strong>
+          </div>
+          <div v-if="!dashboardItems?.length" style="text-align: center; padding: 16px; color: var(--app-text-muted); font-size: 12px;">
+            暂无数据
           </div>
         </div>
       </div>
