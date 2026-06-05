@@ -252,6 +252,23 @@ export const useStatusStore = defineStore('status', () => {
     realtimeLogsEnabled.value = !!enabled
   }
 
+  async function clearLogs(accountId: string) {
+    if (!accountId) return { cleared: 0 }
+    try {
+      const { data } = await api.post('/api/logs/clear', {}, {
+        headers: { 'x-account-id': accountId },
+      })
+      if (data.ok) {
+        logs.value = []
+        return { cleared: data.cleared || 0 }
+      }
+      return { cleared: 0 }
+    } catch (e: any) {
+      console.error('清空日志失败', e)
+      throw e
+    }
+  }
+
   return {
     status,
     logs,
@@ -265,6 +282,7 @@ export const useStatusStore = defineStore('status', () => {
     fetchLogs,
     fetchAccountLogs,
     fetchDailyGifts,
+    clearLogs,
     setRealtimeLogsEnabled,
     connectRealtime,
     disconnectRealtime,
