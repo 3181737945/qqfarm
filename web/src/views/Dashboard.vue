@@ -138,6 +138,13 @@ const nextFriendCheck = computed(() => {
   return formatCountdown(nc.friendRemainSec)
 })
 
+// 秒转小时
+function fmtHours(seconds: number) {
+  if (!seconds && seconds !== 0) return '-'
+  const hours = seconds / 3600
+  return hours.toFixed(1) + '小时'
+}
+
 function formatCountdown(sec?: number) {
   if (sec === undefined || sec === null) return '--:--:--'
   const m = Math.floor(sec / 60)
@@ -312,7 +319,7 @@ onMounted(() => {
 <!-- 化肥容器直接显示原始数据 -->
           <div v-for="item in dashboardItems?.slice(0, 4) || []" :key="item.id" style="display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--app-border-subtle);">
             <span style="color: var(--app-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ item.name }}</span>
-            <strong style="font-family: var(--font-mono);">{{ item.count }}</strong>
+            <strong style="font-family: var(--font-mono);">{{ fmtHours(item.count) }}</strong>
           </div>
           <div v-if="!dashboardItems?.length" style="text-align: center; padding: 16px; color: var(--app-text-muted); font-size: 12px;">
             暂无数据
