@@ -319,7 +319,9 @@ onMounted(() => {
 <!-- 化肥容器直接显示原始数据 -->
           <div v-for="item in dashboardItems?.slice(0, 4) || []" :key="item.id" style="display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--app-border-subtle);">
             <span style="color: var(--app-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ item.name }}</span>
-            <strong style="font-family: var(--font-mono);">{{ fmtHours(item.count) }}</strong>
+            <strong style="font-family: var(--font-mono);">
+              {{ item.id === 1011 || item.id === 1012 ? fmtHours(item.count) : item.count }}
+            </strong>
           </div>
           <div v-if="!dashboardItems?.length" style="text-align: center; padding: 16px; color: var(--app-text-muted); font-size: 12px;">
             暂无数据
